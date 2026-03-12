@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    db_name: "{{ env_name }}_data_city"
+    db_name: "{{ env_name | replace('-', '_') }}_data_city"
 
   tasks:
 
