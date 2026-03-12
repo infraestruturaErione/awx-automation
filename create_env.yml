@@ -7,8 +7,26 @@
 
   tasks:
 
+    - name: criar diretório frontData
+      file:
+        path: "/var/www/{{ env_name }}-frontData"
+        state: directory
+
+    - name: criar diretório serviceData
+      file:
+        path: "/var/www/{{ env_name }}-serviceData"
+        state: directory
+
     - name: copiar frontData
-      command: rsync -a /var/www/default/frontData/ /var/www/{{ env_name }}-frontData/
+      synchronize:
+        src: /var/www/default/frontData/
+        dest: "/var/www/{{ env_name }}-frontData/"
+        recursive: yes
+      delegate_to: "{{ inventory_hostname }}"
 
     - name: copiar serviceData
-      command: rsync -a /var/www/default/serviceData/ /var/www/{{ env_name }}-serviceData/
+      synchronize:
+        src: /var/www/default/serviceData/
+        dest: "/var/www/{{ env_name }}-serviceData/"
+        recursive: yes
+      delegate_to: "{{ inventory_hostname }}"
