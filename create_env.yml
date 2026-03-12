@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    env_name: test
+    env_name: "{{ env_name }}"
 
   tasks:
 
@@ -30,3 +30,4 @@
         dest: "/var/www/{{ env_name }}-serviceData/"
         recursive: yes
       delegate_to: "{{ inventory_hostname }}"
+
