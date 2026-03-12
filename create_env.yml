@@ -41,6 +41,11 @@
         mysql -u root -p540298cb
         -e "CREATE DATABASE {{ db_name }};"
 
+    - name: gerar APP_KEY do Laravel
+      command: php artisan key:generate
+      args:
+        chdir: "/var/www/{{ env_name }}-serviceData"
+
     - name: limpar cache laravel
       command: php artisan optimize:clear
       args:
