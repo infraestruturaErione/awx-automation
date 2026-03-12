@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    env_name: "{{ env_name }}"
+    db_name: "{{ env_name }}_data_city"
 
   tasks:
 
@@ -31,3 +31,17 @@
         recursive: yes
       delegate_to: "{{ inventory_hostname }}"
 
+    - name: criar banco mysql
+      command: >
+        mysql -u root -p540298cb
+        -e "CREATE DATABASE {{ db_name }};"
+
+    - name: limpar cache laravel
+      command: php artisan optimize:clear
+      args:
+        chdir: "/var/www/{{ env_name }}-serviceData"
+
+    - name: rodar migrate
+      command: php artisan migrate --force
+      args:
+        chdir: "/var/www/{{ env_name }}-serviceData"
