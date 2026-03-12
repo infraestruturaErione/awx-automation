@@ -46,12 +46,12 @@
       args:
         chdir: "/var/www/{{ env_name }}-serviceData"
 
-    - name: limpar cache laravel
-      command: php artisan optimize:clear
+    - name: rodar migrate
+      command: php artisan migrate --force
       args:
         chdir: "/var/www/{{ env_name }}-serviceData"
 
-    - name: rodar migrate
-      command: php artisan migrate --force
+    - name: limpar cache laravel
+      command: php artisan optimize:clear
       args:
         chdir: "/var/www/{{ env_name }}-serviceData"
