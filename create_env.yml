@@ -23,7 +23,7 @@
         recursive: yes
       delegate_to: "{{ inventory_hostname }}"
 
-    # CONFIGURA .ENV ANTES DO BUILD (CORRETO)
+    # CONFIGURA .ENV ANTES DO BUILD
     - name: atualizar VITE_API_BASE_URL no .env do front
       lineinfile:
         path: "/var/www/{{ env_name }}-frontData/.env"
@@ -50,21 +50,20 @@
         recurse: yes
 
     - name: instalar dependências do front
-      shell: bash -lc "npm install"
+      command: npm install
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
-      become_flag: '-i'
-      
+      become_flags: '-i'
 
     - name: build do front
-      shell: bash -lc "npm run build"
+      command: npm run build
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
-      become_flag: '-i'
+      become_flags: '-i'
 
     - name: devolver frontData para root
       file:
