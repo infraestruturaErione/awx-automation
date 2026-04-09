@@ -39,6 +39,16 @@
         regexp: '^VITE_AWS3_SECRET_ACCESS_KEY='
         line: "VITE_AWS3_SECRET_ACCESS_KEY={{ aws_secret_key }}"
 
+    - name: instalar dependências do front
+      command: npm install
+      args:
+        chdir: "/var/www/{{ env_name }}-frontData"
+
+    - name: build do front
+      command: npm run build
+      args:
+        chdir: "/var/www/{{ env_name }}-frontData"
+
     - name: copiar serviceData
       synchronize:
         src: /var/www/default/serviceData/
