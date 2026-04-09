@@ -1,12 +1,9 @@
 ---
 - hosts: all
   become: yes
-
   vars:
     db_name: "{{ env_name | replace('-', '_') }}_data_city"
-
   tasks:
-
     - name: criar diretório frontData
       file:
         path: "/var/www/{{ env_name }}-frontData"
@@ -23,6 +20,24 @@
         dest: "/var/www/{{ env_name }}-frontData/"
         recursive: yes
       delegate_to: "{{ inventory_hostname }}"
+
+    - name: atualizar VITE_API_BASE_URL no .env do front
+      lineinfile:
+        path: "/var/www/{{ env_name }}-frontData/.env"
+        regexp: '^VITE_API_BASE_URL='
+        line: "VITE_API_BASE_URL=https://{{ env_name }}.deepvis.com.br/backend"
+
+    - name: atualizar VITE AWS Access Key no .env do front
+      lineinfile:
+        path: "/var/www/{{ env_name }}-frontData/.env"
+        regexp: '^VITE_AWS3_ACCESS_KEY_ID='
+        line: "VITE_AWS3_ACCESS_KEY_ID={{ aws_access_key }}"
+
+    - name: atualizar VITE AWS Secret Key no .env do front
+      lineinfile:
+        path: "/var/www/{{ env_name }}-frontData/.env"
+        regexp: '^VITE_AWS3_SECRET_ACCESS_KEY='
+        line: "VITE_AWS3_SECRET_ACCESS_KEY={{ aws_secret_key }}"
 
     - name: copiar serviceData
       synchronize:
