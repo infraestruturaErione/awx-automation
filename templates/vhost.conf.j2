@@ -1,1 +1,37 @@
+<VirtualHost *:80>
+    ServerName {{ env_name }}.deepvis.com.br
+    DocumentRoot /var/www/{{ env_name }}-frontData/dist
 
+    <Directory /var/www/{{ env_name }}-frontData/dist>
+        AllowOverride All
+        Require all granted
+        Options -Indexes +FollowSymLinks
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.html [L]
+    </Directory>
+
+    Alias /backend "/var/www/{{ env_name }}-serviceData/public"
+    <Directory /var/www/{{ env_name }}-serviceData/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    <FilesMatch "\.php$">
+        SetHandler "proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost/"
+    </FilesMatch>
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_URI} ^/front/
+    RewriteRule ^/front/(.*)$ /{{ env_name }}-serviceData/index.html [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^/front/(.*)$ /{{ env_name }}-serviceData/index.html [QSA,L]
+
+    ErrorLog ${APACHE_LOG_DIR}/{{ env_name }}-error.log
+    CustomLog ${APACHE_LOG_DIR}/{{ env_name }}-access.log combined
+</VirtualHost>
