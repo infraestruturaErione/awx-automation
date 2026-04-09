@@ -80,3 +80,16 @@
       command: php artisan optimize:clear
       args:
         chdir: "/var/www/{{ env_name }}-serviceData"
+
+    - name: gerar virtualhost apache
+      template:
+        src: templates/vhost.conf.j2
+        dest: "/etc/apache2/sites-available/{{ env_name }}.conf"
+
+    - name: ativar site no apache
+      command: a2ensite {{ env_name }}.conf
+
+    - name: reload apache
+      service:
+        name: apache2
+        state: reloaded
