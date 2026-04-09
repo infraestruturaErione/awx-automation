@@ -55,6 +55,8 @@
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
+      become_flag: '-i'
+      
 
     - name: build do front
       shell: bash -lc "npm run build"
@@ -62,6 +64,7 @@
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
+      become_flag: '-i'
 
     - name: devolver frontData para root
       file:
