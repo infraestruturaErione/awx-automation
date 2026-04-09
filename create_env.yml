@@ -4,7 +4,8 @@
 
   vars:
     db_name: "{{ env_name | replace('-', '_') }}_data_city"
-    npm_bin: "/home/erione/.nvm/versions/node/v21.5.0/bin/npm"
+    node_path: "/home/erione/.nvm/versions/node/v21.5.0/bin"
+    npm_bin: "{{ node_path }}/npm"
 
   tasks:
 
@@ -55,6 +56,8 @@
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
+      environment:
+        PATH: "{{ node_path }}:/usr/local/bin:/usr/bin:/bin"
 
     - name: build do front
       command: "{{ npm_bin }} run build"
@@ -62,6 +65,8 @@
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
+      environment:
+        PATH: "{{ node_path }}:/usr/local/bin:/usr/bin:/bin"
 
     - name: devolver frontData para root
       file:
