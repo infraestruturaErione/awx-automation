@@ -29,7 +29,7 @@
 
     - name: gerar .env do front
       template:
-        src: templates/front.env.j2
+        src: templates/front_env.j2
         dest: "/var/www/{{ env_name }}-frontData/.env"
 
     - name: dar permissão ao erione no frontData
