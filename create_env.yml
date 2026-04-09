@@ -1,8 +1,10 @@
 ---
 - hosts: all
   become: yes
+
   vars:
     db_name: "{{ env_name | replace('-', '_') }}_data_city"
+
   tasks:
     - name: criar diretório frontData
       file:
@@ -43,18 +45,22 @@
       command: npm install
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
+      become: yes
+      become_user: erione
 
     - name: build do front
       command: npm run build
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
+      become: yes
+      become_user: erione
 
-    - name: copiar serviceData
-      synchronize:
-        src: /var/www/default/serviceData/
-        dest: "/var/www/{{ env_name }}-serviceData/"
-        recursive: yes
-      delegate_to: "{{ inventory_hostname }}"
+    - name: corrigir permissões do frontData
+      file:
+        path: "/var/www/{{ env_name }}-frontData"
+        owner: www-data
+        group: www-data
+        recurse: yes
 
     - name: gerar arquivo .env
       template:
