@@ -18,30 +18,19 @@
         path: "/var/www/{{ env_name }}-frontData"
         state: directory
 
-    - name: copiar frontData
+    - name: copiar frontData (sem .env)
       synchronize:
         src: /var/www/default/frontData/
         dest: "/var/www/{{ env_name }}-frontData/"
         recursive: yes
+        rsync_opts:
+          - "--exclude=.env"
       delegate_to: "{{ inventory_hostname }}"
 
-    - name: atualizar VITE_API_BASE_URL no .env do front
-      lineinfile:
-        path: "/var/www/{{ env_name }}-frontData/.env"
-        regexp: '^VITE_API_BASE_URL='
-        line: "VITE_API_BASE_URL=https://{{ env_name }}.deepvis.com.br/backend"
-
-    - name: atualizar VITE AWS Access Key no .env do front
-      lineinfile:
-        path: "/var/www/{{ env_name }}-frontData/.env"
-        regexp: '^VITE_AWS3_ACCESS_KEY_ID='
-        line: "VITE_AWS3_ACCESS_KEY_ID={{ aws_access_key }}"
-
-    - name: atualizar VITE AWS Secret Key no .env do front
-      lineinfile:
-        path: "/var/www/{{ env_name }}-frontData/.env"
-        regexp: '^VITE_AWS3_SECRET_ACCESS_KEY='
-        line: "VITE_AWS3_SECRET_ACCESS_KEY={{ aws_secret_key }}"
+    - name: gerar .env do front
+      template:
+        src: templates/front.env.j2
+        dest: "/var/www/{{ env_name }}-frontData/.env"
 
     - name: dar permissão ao erione no frontData
       file:
@@ -76,7 +65,7 @@
         recurse: yes
 
     # ========================
-    # BACK (SERVICE)
+    # BACK (SERVICE)  ← NÃO MEXI
     # ========================
 
     - name: criar diretório serviceData
