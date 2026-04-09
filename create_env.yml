@@ -4,6 +4,7 @@
 
   vars:
     db_name: "{{ env_name | replace('-', '_') }}_data_city"
+    npm_bin: "/home/erione/.nvm/versions/node/v21.5.0/bin/npm"
 
   tasks:
 
@@ -23,7 +24,6 @@
         recursive: yes
       delegate_to: "{{ inventory_hostname }}"
 
-    # CONFIGURA .ENV ANTES DO BUILD
     - name: atualizar VITE_API_BASE_URL no .env do front
       lineinfile:
         path: "/var/www/{{ env_name }}-frontData/.env"
@@ -50,20 +50,18 @@
         recurse: yes
 
     - name: instalar dependências do front
-      command: npm install
+      command: "{{ npm_bin }} install"
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
-      become_flags: '-i'
 
     - name: build do front
-      command: npm run build
+      command: "{{ npm_bin }} run build"
       args:
         chdir: "/var/www/{{ env_name }}-frontData"
       become: yes
       become_user: erione
-      become_flags: '-i'
 
     - name: devolver frontData para root
       file:
